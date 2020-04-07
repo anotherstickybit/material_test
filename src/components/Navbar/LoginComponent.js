@@ -87,7 +87,7 @@ const LoginComponent = (props) => {
             <Button className={classes.openPopupButton} color="secondary" aria-describedby={id} size={"small"}
                     variant="contained"
                     onClick={handleClick}>
-                Login
+                Sing in
             </Button>
             <Popover
                 id={id}
