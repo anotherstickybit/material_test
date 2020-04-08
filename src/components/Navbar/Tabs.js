@@ -15,7 +15,8 @@ import Toolbar from "@material-ui/core/Toolbar";
 import Grid from "@material-ui/core/Grid";
 import TextField from "@material-ui/core/TextField";
 import LoginComponent from "./LoginComponent";
-import LoginComponentContainer from "./LoginComponentContainer";
+
+import Login from "./LoginComponent";
 
 function TabPanel(props) {
     const {children, value, index, ...other} = props;
@@ -124,7 +125,7 @@ export default function SimpleTabs() {
 
                             {/*<Button className={classes.loginButton} size={"small"} variant="contained"*/}
                             {/*        color="primary">Login</Button>*/}
-                            <LoginComponentContainer/>
+                            <Login/>
                         </Grid>
                     </Grid>
                 </Toolbar>

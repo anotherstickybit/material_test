@@ -5,9 +5,13 @@ import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
 import TextField from "@material-ui/core/TextField";
 import * as axios from "axios";
-import {updatePassword, updateUserName} from "../redux/authReducer";
+import {authenticateUser, logout, onRefreshCheckIfAuth, updatePassword, updateUserName} from "../redux/authReducer";
+import {Field, reduxForm} from "redux-form";
+import {connect} from "react-redux";
+import {render} from "react-dom";
+import LogoutPopover from "./LogoutPopover";
 
-const useStyles = makeStyles((theme) => ({
+export const useStyles = makeStyles((theme) => ({
     typography: {
         padding: theme.spacing(2),
     },
@@ -53,41 +57,35 @@ const LoginComponent = (props) => {
     const handleClose = () => {
         setAnchorEl(null);
     };
-
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
-
-    const sendRequest = () => {
-        // axios.post(`http://127.0.0.1:8000/auth/jwt/create/`,  {
-        //         'username': 'admin',
-        //         'password': 'administrator123'
-        // }).then(response => {
-        //
-        // })
-        alert(props.userState.username)
-    }
-
-    let onUserNameChange = (e) => {
-        let body = e.target.value;
-        props.updateUserName(body);
-    }
-
-    let onUserPasswordChange = (e) => {
-        let body = e.target.value;
-        props.updatePassword(body);
-    }
 
     let onAuth = () => {
         props.authenticateUser(props.userState.username, props.userState.password);
     }
 
+    const renderTextField = ({
+                                 label,
+                                 input,
+                                 meta: {touched, invalid, error},
+                                 ...custom
+                             }) => (
+        <TextField
+            label={label}
+            placeholder={label}
+            error={touched && invalid}
+            helperText={touched && error}
+            {...input}
+            {...custom}
+        />
+    )
     return (
         <div>
             {/*{ state.isAuth  ? 'Welcome'  }*/}
             <Button className={classes.openPopupButton} color="secondary" aria-describedby={id} size={"small"}
                     variant="contained"
                     onClick={handleClick}>
-                Sing in
+                Sign in
             </Button>
             <Popover
                 id={id}
@@ -105,20 +103,19 @@ const LoginComponent = (props) => {
                 }}
             >
                 <Typography className={classes.typography}>
-                    <div>
-                        <TextField className={classes.textField} onChange={onUserNameChange} id="standard-basic"
-                                   label="Username" required={true}/>
-                    </div>
-                    <div>
-                        <TextField className={classes.textField} onChange={onUserPasswordChange} type="password"
-                                   id="standard-basic" label="Password" required={true}/>
-                    </div>
-                    <div>
-                        <Button className={classes.loginButton}
-                                onClick={onAuth}
-                                aria-describedby={id}
-                                size={"small"} variant="contained">Submit</Button>
-                    </div>
+                    <form onSubmit={props.handleSubmit}>
+                        <div>
+                            <Field name="username" component={renderTextField} label="User Name"/>
+                        </div>
+                        <div>
+                            <Field name="password" component={renderTextField} label="Password" type={'password'}/>
+                        </div>
+                        <div>
+                            <Button className={classes.loginButton}
+                                    aria-describedby={id}
+                                    size={"small"} variant="contained" type={'submit'}>Submit</Button>
+                        </div>
+                    </form>
                 </Typography>
             </Popover>
 
@@ -126,4 +123,35 @@ const LoginComponent = (props) => {
     );
 }
 
-export default LoginComponent;
+const LoginReduxForm = reduxForm({form: 'login'})(LoginComponent);
+
+class Login extends React.Component {
+
+
+    componentDidMount() {
+        if (localStorage.getItem('access-jwt')) {
+            this.props.onRefreshCheckIfAuth(localStorage.getItem('access-jwt'));
+        }
+    }
+
+    onSubmit(formData) {
+        this.props.authenticateUser(formData.username, formData.password);
+    }
+
+    render() {
+        if (this.props.userState.isAuth) {
+            return (
+                <LogoutPopover username={this.props.userState.username} logout={this.props.logout}/>
+            )
+        }
+        return (
+            <LoginReduxForm onSubmit={this.onSubmit.bind(this)}/>
+        );
+    }
+}
+
+const mapStateToProps = (state) => ({
+    userState: state.auth,
+})
+
+export default connect(mapStateToProps, {authenticateUser, onRefreshCheckIfAuth, logout})(Login);

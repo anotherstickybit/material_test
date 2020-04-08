@@ -17,7 +17,21 @@ export const dataApi ={
             'username': userName,
             'password': password
         }).then(response => {
+            localStorage.setItem('access-jwt', response.data.access)
             return response.data;
         })
+    },
+    me(accessToken) {
+        return instance.get(`/auth/users/me/`, { headers: { Authorization: `Bearer ${accessToken}`}})
+            .then(response => {
+                return response.data;
+            })
+    },
+    logout(accessToken) {
+        return instance.post(`/token/logout/`, { headers: { Authorization: `Bearer ${accessToken}`}})
+            .then(response => {
+                localStorage.removeItem('access-jwt');
+                return response.data;
+            })
     }
 }
