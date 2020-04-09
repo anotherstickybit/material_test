@@ -10,6 +10,7 @@ import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
 import {render} from "react-dom";
 import LogoutPopover from "./LogoutPopover";
+import validate from '../validators/ValidateLoginTextField';
 
 export const useStyles = makeStyles((theme) => ({
     typography: {
@@ -22,16 +23,13 @@ export const useStyles = makeStyles((theme) => ({
         width: 90,
         height: 30,
         float: 'right',
-        // backgroundColor: '#2E3B55',
-        // '&:hover': {
-        //     backgroundColor: '#475c85'
-        // },
     },
     textField: {
-        margin: 2
+        margin: 4,
     },
     loginButton: {
         marginTop: '10px',
+        marginLeft: '4px',
         color: 'white',
         backgroundColor: '#2E3B55',
         '&:hover': {
@@ -77,6 +75,9 @@ const LoginComponent = (props) => {
             helperText={touched && error}
             {...input}
             {...custom}
+            variant="outlined"
+            size="small"
+            className={classes.textField}
         />
     )
     return (
@@ -105,7 +106,7 @@ const LoginComponent = (props) => {
                 <Typography className={classes.typography}>
                     <form onSubmit={props.handleSubmit}>
                         <div>
-                            <Field name="username" component={renderTextField} label="User Name"/>
+                            <Field name="username" component={renderTextField} label="User Name" autoFocus/>
                         </div>
                         <div>
                             <Field name="password" component={renderTextField} label="Password" type={'password'}/>
@@ -123,7 +124,7 @@ const LoginComponent = (props) => {
     );
 }
 
-const LoginReduxForm = reduxForm({form: 'login'})(LoginComponent);
+const LoginReduxForm = reduxForm({form: 'login', validate})(LoginComponent);
 
 class Login extends React.Component {
 

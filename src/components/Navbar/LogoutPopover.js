@@ -3,6 +3,9 @@ import { makeStyles } from '@material-ui/core/styles';
 import Popover from '@material-ui/core/Popover';
 import Typography from '@material-ui/core/Typography';
 import Button from '@material-ui/core/Button';
+import IconButton from "@material-ui/core/IconButton";
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
+import { red } from '@material-ui/core/colors';
 
 const useStyles = makeStyles((theme) => ({
     typography: {
@@ -13,10 +16,10 @@ const useStyles = makeStyles((theme) => ({
     },
     userButton: {
         display: 'inline-block',
-        marginTop: '9px',
+        marginTop: '-5px',
         color: 'white',
         width: "auto",
-        height: 30,
+        height: 50,
         float: 'right',
     },
     logoutButton: {
@@ -51,9 +54,12 @@ const LogoutPopover = (props) => {
 
     return (
         <div>
-            <Button className={classes.userButton} aria-describedby={id} size={"small"} variant="contained" color="secondary" onClick={handleClick}>
-                {props.username}
-            </Button>
+            {/*<Button className={classes.userButton} aria-describedby={id} size={"small"} variant="contained" color="secondary" onClick={handleClick}>*/}
+            {/*    {props.username}*/}
+            {/*</Button>*/}
+            <IconButton className={classes.userButton} size={"medium"} color="secondary" aria-label="user settings" onClick={handleClick}>
+                <AccountCircleIcon color={"secondary"} fontSize={"large"} />
+            </IconButton>
             <Popover
                 id={id}
                 open={open}
@@ -70,6 +76,10 @@ const LogoutPopover = (props) => {
                 }}
             >
                 <Typography className={classes.typography}>
+                    <Typography variant="h6" gutterBottom>
+                        <div>User: {props.username}</div>
+                    </Typography>
+
                     <Button className={classes.logoutButton}
                             aria-describedby={id} size={"small"}
                             variant="contained" color="secondary" onClick={logoutUser}>Logout</Button>
