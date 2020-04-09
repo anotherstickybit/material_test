@@ -77,7 +77,7 @@ const LogoutPopover = (props) => {
             >
                 <Typography className={classes.typography}>
                     <Typography variant="h6" gutterBottom>
-                        <div>User: {props.username}</div>
+                        <div>USER: {props.username}</div>
                     </Typography>
 
                     <Button className={classes.logoutButton}

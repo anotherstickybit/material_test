@@ -68,7 +68,7 @@ export const authenticateUser = (userName, password) => {
     return (dispatch) => {
         dataApi.authorize(userName, password).then(data => {
             dataApi.me(data.access).then(data => {
-                dispatch(authenticate(data.username));
+                dispatch(authenticate(data.Username));
             })
         });
     }
@@ -77,7 +77,7 @@ export const authenticateUser = (userName, password) => {
 export const onRefreshCheckIfAuth = (accessToken) => {
     return (dispatch) => {
         dataApi.me(accessToken).then(data => {
-            dispatch(setUserName(data.username));
+            dispatch(setUserName(data.Username));
         })
     }
 }

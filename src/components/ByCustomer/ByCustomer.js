@@ -6,6 +6,9 @@ import {makeStyles} from "@material-ui/core/styles";
 import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
+import Autocomplete from '@material-ui/lab/Autocomplete';
+import Customers from "./CustomersArray";
+import TextField from "@material-ui/core/TextField";
 
 const ByCustomer = () => {
 
@@ -14,8 +17,9 @@ const ByCustomer = () => {
             margin: theme.spacing(1),
             minWidth: 120,
         },
-        selectEmpty: {
-            marginTop: theme.spacing(2),
+        autocomplete: {
+            marginTop: 11,
+            marginLeft: 20,
         },
         getButton: {
             display: 'inline',
@@ -48,26 +52,19 @@ const ByCustomer = () => {
     const handleChange = (event) => {
         setAge(event.target.value);
     };
-    const Customers = [
-        'Hartmann',
-        'DK-PROD',
-        'Halsnaes'
-    ]
 
     return (
         <div>
             <FormControl className={classes.formControl}>
-                <InputLabel className={classes.marginForSelectAndInput} id="demo-simple-select-label">Customer</InputLabel>
-                <Select className={classes.marginForSelectAndInput}
-                    labelId="demo-simple-select-label"
-                    id="demo-simple-select"
-                    value={age}
-                    onChange={handleChange}
-                > {Customers.map(cust => {
-                    return <MenuItem value={cust}>{cust}</MenuItem>
-                })}
-
-                </Select>
+                <Autocomplete
+                    id="combo-box-demo"
+                    size={'small'}
+                    className={classes.autocomplete}
+                    options={Customers}
+                    getOptionLabel={(option) => option.title}
+                    style={{ width: 300 }}
+                    renderInput={(params) => <TextField {...params} label="Select Customer" variant="outlined" />}
+                />
 
             </FormControl>
             <Button className={classes.getButton} variant="contained" color="primary">Get Schedule</Button>
