@@ -9,8 +9,9 @@ import Login from "../Navbar/LoginComponent";
 import validate from "../validators/ValidateByClientTextField"
 import Typography from "@material-ui/core/Typography";
 import {createMuiTheme} from "@material-ui/core";
-import {green} from '@material-ui/core/colors';
+import {blue} from '@material-ui/core/colors';
 import {ThemeProvider} from "@material-ui/styles";
+import {requestByClient} from "../redux/scheduleByClientReducer";
 
 
 
@@ -79,7 +80,7 @@ const ByClientComponent = (props) => {
 
     const theme = createMuiTheme({
         palette: {
-            primary: green,
+            primary: blue,
         },
     });
 
@@ -87,7 +88,6 @@ const ByClientComponent = (props) => {
     return (
         <div>
             <div>
-
                 <form onSubmit={props.handleSubmit}>
                     <Typography variant="h6" gutterBottom className={classes.typography}>
                         Explanation
@@ -103,35 +103,7 @@ const ByClientComponent = (props) => {
                     <CircularProgress mode="indeterminate" classes={{root: classes.progress}}/>
                 </form>
                 <div>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-                    <p>DATA</p>
-
+                    { props.newServerName }
                 </div>
             </div>
         </div>
@@ -143,12 +115,12 @@ const ByClientReduxForm = reduxForm({form: 'byClient', validate})(ByClientCompon
 class ByClient extends React.Component {
 
     onSubmit(formData) {
-
+        this.props.requestByClient(formData.client)
     }
 
     render() {
         return (
-            <ByClientReduxForm onSubmit={this.onSubmit.bind(this)}/>
+            <ByClientReduxForm onSubmit={this.onSubmit.bind(this)} newServerName={this.props.byClientPage.newServerName}/>
         );
     }
 }
@@ -157,4 +129,4 @@ const mapStateToProps = (state) => ({
     byClientPage: state.byClient,
 })
 
-export default connect(mapStateToProps, {})(ByClient);
+export default connect(mapStateToProps, {requestByClient})(ByClient);

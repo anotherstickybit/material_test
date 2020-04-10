@@ -11,6 +11,9 @@ import {connect} from "react-redux";
 import {render} from "react-dom";
 import LogoutPopover from "./LogoutPopover";
 import validate from '../validators/ValidateLoginTextField';
+import {createMuiTheme} from "@material-ui/core";
+import {blue} from "@material-ui/core/colors";
+import {ThemeProvider} from "@material-ui/styles";
 
 export const useStyles = makeStyles((theme) => ({
     typography: {
@@ -60,6 +63,12 @@ const renderTextField = ({
 )
 const LoginComponent = (props) => {
 
+    const theme = createMuiTheme({
+        palette: {
+            primary: blue,
+        },
+    });
+
     let state = props.userState;
 
     const classes = useStyles();
@@ -105,10 +114,16 @@ const LoginComponent = (props) => {
                 <Typography className={classes.typography}>
                     <form onSubmit={props.handleSubmit}>
                         <div>
-                            <Field name="username" component={renderTextField} label="User Name" className={classes.textField}/>
+                            <ThemeProvider theme={theme}>
+                                <Field name="username" component={renderTextField} label="User Name"
+                                       className={classes.textField}/>
+                            </ThemeProvider>
                         </div>
                         <div>
-                            <Field name="password" component={renderTextField} label="Password" type={'password'} className={classes.textField}/>
+                            <ThemeProvider theme={theme}>
+                                <Field name="password" component={renderTextField} label="Password" type={'password'}
+                                       className={classes.textField}/>
+                            </ThemeProvider>
                         </div>
                         <div>
                             <Button className={classes.loginButton}

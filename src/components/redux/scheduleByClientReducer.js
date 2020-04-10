@@ -4,10 +4,10 @@ const BY_CLIENT_GET = 'BY_CLIENT_GET'
 const SET_DATA = 'SET_DATA'
 
 let initialState = {
-    data: [
-
-    ],
+    data: [],
     newServerName: '',
+    schedule: '',
+    isRequestInProgress: false
 };
 
 const scheduleByClientReducer = (state = initialState, action) => {
@@ -15,25 +15,19 @@ const scheduleByClientReducer = (state = initialState, action) => {
         case BY_CLIENT_GET:
             return {
                 ...state,
-                newMessageBody: action.body
+                newServerName: action.client
             };
-        case SET_DATA:
-            return {
-                ...state,
-                data: action.data
-            }
         default:
             return state;
     }
 }
 
-export const updateNewServerNameCreator = (body) => ({type: BY_CLIENT_GET, body});
-export const setData = (data) => ({type: SET_DATA, data});
+export const getByClient = (client) => ({type: BY_CLIENT_GET, client});
 
-export const getInfo = (serverName) => {
+export const requestByClient = (client) => {
     return (dispatch) => {
-        dataApi.getAllQuestions().then(data => {
-            dispatch(setData(data));
+        dataApi.getByClient(client).then(data => {
+            dispatch(getByClient(data.client))
         })
     }
 }

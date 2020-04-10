@@ -35,8 +35,8 @@ export const dataApi ={
             })
     },
     getByClient(client) {
-        return instance.get(`byclient/${client}`).then(response => {
-            return response.client;
+        return instance.get(`/byclient/${client}/`).then(response => {
+            return response.data;
         })
     }
 }
