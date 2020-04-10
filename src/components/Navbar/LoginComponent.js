@@ -41,6 +41,23 @@ export const useStyles = makeStyles((theme) => ({
     }
 }));
 
+const renderTextField = ({
+                             label,
+                             input,
+                             meta: {touched, invalid, error},
+                             ...custom
+                         }) => (
+    <TextField
+        label={label}
+        placeholder={label}
+        error={touched && invalid}
+        helperText={touched && error}
+        {...input}
+        {...custom}
+        variant="outlined"
+        size="small"
+    />
+)
 const LoginComponent = (props) => {
 
     let state = props.userState;
@@ -62,24 +79,6 @@ const LoginComponent = (props) => {
         props.authenticateUser(props.userState.username, props.userState.password);
     }
 
-    const renderTextField = ({
-                                 label,
-                                 input,
-                                 meta: {touched, invalid, error},
-                                 ...custom
-                             }) => (
-        <TextField
-            label={label}
-            placeholder={label}
-            error={touched && invalid}
-            helperText={touched && error}
-            {...input}
-            {...custom}
-            variant="outlined"
-            size="small"
-            className={classes.textField}
-        />
-    )
     return (
         <div>
             {/*{ state.isAuth  ? 'Welcome'  }*/}
@@ -106,10 +105,10 @@ const LoginComponent = (props) => {
                 <Typography className={classes.typography}>
                     <form onSubmit={props.handleSubmit}>
                         <div>
-                            <Field name="username" component={renderTextField} label="User Name" autoFocus/>
+                            <Field name="username" component={renderTextField} label="User Name" className={classes.textField}/>
                         </div>
                         <div>
-                            <Field name="password" component={renderTextField} label="Password" type={'password'}/>
+                            <Field name="password" component={renderTextField} label="Password" type={'password'} className={classes.textField}/>
                         </div>
                         <div>
                             <Button className={classes.loginButton}

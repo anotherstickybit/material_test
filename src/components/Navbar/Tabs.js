@@ -132,7 +132,7 @@ export default function SimpleTabs() {
             </AppBar>
             <TabPanel value={value} index={0}>
                 <Paper elevation={3} className={classes.paper}>
-                    <ByClientContainer/>
+                    <ByClient/>
                 </Paper>
             </TabPanel>
             <TabPanel value={value} index={1}>

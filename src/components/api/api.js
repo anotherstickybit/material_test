@@ -33,5 +33,10 @@ export const dataApi ={
                 localStorage.removeItem('access-jwt');
                 return response.data;
             })
+    },
+    getByClient(client) {
+        return instance.get(`byclient/${client}`).then(response => {
+            return response.client;
+        })
     }
 }
