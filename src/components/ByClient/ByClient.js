@@ -7,6 +7,12 @@ import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
 import Login from "../Navbar/LoginComponent";
 import validate from "../validators/ValidateByClientTextField"
+import Typography from "@material-ui/core/Typography";
+import {createMuiTheme} from "@material-ui/core";
+import {green} from '@material-ui/core/colors';
+import {ThemeProvider} from "@material-ui/styles";
+
+
 
 const useStyles = makeStyles((theme) => ({
     root: {
@@ -16,9 +22,10 @@ const useStyles = makeStyles((theme) => ({
         },
     },
     get_button: {
-        // display: 'inline-block',
-        marginTop: '-68px',
-        marginLeft: '300px',
+        display: 'inline',
+        verticalAlign: 'middle',
+        marginTop: '20px',
+        marginLeft: '50px',
         backgroundColor: '#039be5',
         '&:hover': {
             backgroundColor: '#0277bd'
@@ -32,10 +39,19 @@ const useStyles = makeStyles((theme) => ({
         width: 20
     },
     textField: {
-        // display: 'inline-block',
+        display: 'inline-block',
         marginLeft: '40px',
         marginTop: '20px',
-    }
+
+    },
+    typography: {
+        display: 'inline-block',
+        marginLeft: '40px',
+        marginTop: '20px',
+    },
+    cssFocused: {
+        color: 'green'
+    },
 }));
 
 
@@ -45,6 +61,7 @@ const renderTextField = ({
                              meta: {touched, invalid, error},
                              ...custom
                          }) => (
+
     <TextField
         label={label}
         placeholder={label}
@@ -55,21 +72,32 @@ const renderTextField = ({
         variant="outlined"
         size="small"
     />
+
 )
 
 const ByClientComponent = (props) => {
 
+    const theme = createMuiTheme({
+        palette: {
+            primary: green,
+        },
+    });
+
     const classes = useStyles();
     return (
         <div>
-            <div >
+            <div>
+
                 <form onSubmit={props.handleSubmit}>
+                    <Typography variant="h6" gutterBottom className={classes.typography}>
+                        Explanation
+                    </Typography>
                     <div>
-                        <Field name="client" component={renderTextField} label={'Server Name'}
-                               className={classes.textField}/>
-                    </div>
-                    <div>
-                        <Button classes={{root: classes.get_button}} variant="contained"
+                        <ThemeProvider theme={theme}>
+                            <Field name="client" component={renderTextField} label={'Server Name'}
+                                   className={classes.textField}/>
+                        </ThemeProvider>
+                        <Button className={classes.get_button} variant="contained"
                                 color="primary" type={'submit'}>Get Schedule</Button>
                     </div>
                     <CircularProgress mode="indeterminate" classes={{root: classes.progress}}/>
