@@ -1,7 +1,7 @@
 import {dataApi} from "../api/api";
 
 const BY_CLIENT_GET = 'BY_CLIENT_GET'
-const SET_DATA = 'SET_DATA'
+const REQUEST_IN_PROGRESS = 'REQUEST_IN_PROGRESS'
 
 let initialState = {
     data: [],
@@ -15,20 +15,33 @@ const scheduleByClientReducer = (state = initialState, action) => {
         case BY_CLIENT_GET:
             return {
                 ...state,
-                newServerName: action.client
+                newServerName: action.client,
+                isRequestInProgress: action.isRequestInProgress
+            };
+        case REQUEST_IN_PROGRESS:
+            return {
+                ...state,
+                isRequestInProgress: action.isRequestInProgress
             };
         default:
             return state;
     }
 }
 
-export const getByClient = (client) => ({type: BY_CLIENT_GET, client});
+export const getByClient = (client, isRequestInProgress) => ({type: BY_CLIENT_GET, client, isRequestInProgress});
+export const requestInProgressAction = (isRequestInProgress) => ({type: REQUEST_IN_PROGRESS, isRequestInProgress})
 
 export const requestByClient = (client) => {
     return (dispatch) => {
         dataApi.getByClient(client).then(data => {
-            dispatch(getByClient(data.client))
+            dispatch(getByClient(data.client, false))
         })
+    }
+}
+
+export const requestInProgress = (is) => {
+    return (dispatch) => {
+        dispatch(requestInProgressAction(is));
     }
 }
 
