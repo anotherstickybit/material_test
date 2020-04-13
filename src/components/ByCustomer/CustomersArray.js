@@ -7,3 +7,12 @@ const Customers = [
 ]
 
 export default Customers;
+
+export const getCustomersForAccount = (customersString) => {
+    if (customersString === 'all') return Customers;
+    return  Customers.filter(elem => {
+        if (customersString.includes(elem.val)) {
+            return elem;
+        }
+    })
+}

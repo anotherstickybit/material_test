@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import {createMuiTheme} from "@material-ui/core";
 import {blue} from '@material-ui/core/colors';
 import {ThemeProvider} from "@material-ui/styles";
-import {requestByClient, requestInProgress} from "../redux/scheduleByClientReducer";
+import {requestByClient, requestInProgress} from "../redux/scheduleGetReducer";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -105,7 +105,7 @@ const ByClientComponent = (props) => {
 
                 </form>
 
-                <div className={classes.outputStyle} dangerouslySetInnerHTML={{__html: props.newServerName}}/>
+                <div className={classes.outputStyle} dangerouslySetInnerHTML={{__html: props.schedule}}/>
 
             </div>
         </div>
@@ -125,7 +125,7 @@ class ByClient extends React.Component {
     render() {
         return (
             <ByClientReduxForm onSubmit={this.onSubmit.bind(this)}
-                               newServerName={this.props.byClientPage.newServerName}
+                               schedule={this.props.byClientPage.schedule}
                                isRequestInProgress={this.props.byClientPage.isRequestInProgress} />
         );
     }

@@ -7,7 +7,7 @@ import FormControl from "@material-ui/core/FormControl";
 import InputLabel from "@material-ui/core/InputLabel";
 import Button from "@material-ui/core/Button";
 import Autocomplete from '@material-ui/lab/Autocomplete';
-import Customers from "./CustomersArray";
+import Customers, {getCustomersForAccount} from "./CustomersArray";
 import TextField from "@material-ui/core/TextField";
 import {Field, reduxForm} from "redux-form";
 import {connect} from "react-redux";
@@ -16,6 +16,7 @@ import {createMuiTheme} from "@material-ui/core";
 import {blue} from "@material-ui/core/colors";
 import {ThemeProvider} from "@material-ui/styles";
 import SimpleAlert from "../utils/SimpleAlert";
+import {requestByCustomer} from "../redux/scheduleGetReducer";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -49,6 +50,10 @@ const useStyles = makeStyles((theme) => ({
     },
     marginForSelectAndInput: {
         marginLeft: '20px'
+    },
+    outputStyle: {
+        marginLeft: '40px',
+        marginTop: '20px',
     }
 }));
 
@@ -61,7 +66,6 @@ const renderAutocomplete = ({
     <Autocomplete
         id="combo-box-demo"
         size={'small'}
-        options={Customers}
         getOptionLabel={(option) => option.title}
         style={{width: 300}}
         error={touched && invalid}
@@ -87,23 +91,16 @@ const ByCustomerComponent = (props) => {
                 <FormControl className={classes.formControl}>
                     <ThemeProvider theme={theme}>
                         <Field name={'autocomplete'} required={true} className={classes.autocomplete}
-                               component={renderAutocomplete}/>
+                               component={renderAutocomplete} options={getCustomersForAccount(props.allowedCustomers)}
+                               disabled={!props.isAuth}/>
                     </ThemeProvider>
                 </FormControl>
-                <Button className={classes.getButton} variant="contained" type={'submit'} color="primary">Get
+                <Button className={classes.getButton} disabled={!props.isAuth} variant="contained" type={'submit'} color="primary">Get
                     Schedule</Button>
                 <Button className={classes.createPdfButton} disabled={true} variant="contained" color="primary">Create
                     PDF</Button>
             </form>
-            <div>
-                <p>Data</p>
-                <p>Data</p>
-                <p>Data</p>
-                <p>Data</p>
-                <p>Data</p>
-                <p>Data</p>
-                <p>Data</p>
-            </div>
+            { props.isAuth && <div className={classes.outputStyle} dangerouslySetInnerHTML={{__html: props.schedule}}/> }
         </div>
     );
 }
@@ -112,12 +109,14 @@ const ByCustomerReduxForm = reduxForm({form: 'byCustomer', validate})(ByCustomer
 class ByCustomer extends React.Component {
 
     onSubmit(formData) {
-        console.log(formData.autocomplete)
+        this.props.requestByCustomer(formData.autocomplete.val);
     }
 
     render() {
         return (
-            <ByCustomerReduxForm onSubmit={this.onSubmit.bind(this)} isAuth={this.props.authorization.isAuth}/>
+            <ByCustomerReduxForm onSubmit={this.onSubmit.bind(this)} isAuth={this.props.authorization.isAuth}
+                                 allowedCustomers={this.props.authorization.allowedCustomers}
+                                 schedule={this.props.byCustomer.scheduleByCustomer}/>
         );
 
     }
@@ -125,6 +124,7 @@ class ByCustomer extends React.Component {
 
 const mapStateToProps = (state) => ({
     authorization: state.auth,
+    byCustomer: state.byClient,
 })
 
-export default connect(mapStateToProps, {})(ByCustomer);
+export default connect(mapStateToProps, {requestByCustomer})(ByCustomer);

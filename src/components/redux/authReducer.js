@@ -1,7 +1,7 @@
 import {dataApi} from "../api/api";
 
 const SET_USER_DATA = 'SET_USER_DATA';
-const SET_USER_NAME = 'SET_USER_NAME';
+const SET_USER_NAME_AND_CUSTOMERS = 'SET_USER_NAME_AND_CUSTOMERS';
 const UPDATE_USER_NAME = 'UPDATE_USER_NAME';
 const UPDATE_USER_PASSWORD = 'UPDATE_USER_PASSWORD';
 const LOGOUT = 'LOGOUT';
@@ -39,11 +39,12 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 password: action.body
             };
-        case SET_USER_NAME:
+        case SET_USER_NAME_AND_CUSTOMERS:
             return {
                 ...state,
                 username: action.username,
-                isAuth: true
+                isAuth: true,
+                allowedCustomers: action.allowedCustomers
             };
         case LOGOUT:
             return {
@@ -57,8 +58,8 @@ const authReducer = (state = initialState, action) => {
 export const authenticate = (username) =>
     ({type: SET_USER_DATA, username});
 
-export const setUserName = (username) =>
-    ({type: SET_USER_NAME, username});
+export const setUserNameAndCustomers = (username, allowedCustomers) =>
+    ({type: SET_USER_NAME_AND_CUSTOMERS, username, allowedCustomers});
 
 export const loggedOut = () =>
     ({type: LOGOUT});
@@ -68,7 +69,7 @@ export const authenticateUser = (userName, password) => {
     return (dispatch) => {
         dataApi.authorize(userName, password).then(data => {
             dataApi.me(data.access).then(data => {
-                dispatch(authenticate(data.Username));
+                dispatch(setUserNameAndCustomers(data.Username, data.Customers));
             })
         });
     }
@@ -77,7 +78,7 @@ export const authenticateUser = (userName, password) => {
 export const onRefreshCheckIfAuth = (accessToken) => {
     return (dispatch) => {
         dataApi.me(accessToken).then(data => {
-            dispatch(setUserName(data.Username));
+            dispatch(setUserNameAndCustomers(data.Username, data.Customers));
         })
     }
 }

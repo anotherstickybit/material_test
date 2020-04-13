@@ -10,6 +10,8 @@ import { red } from '@material-ui/core/colors';
 const useStyles = makeStyles((theme) => ({
     typography: {
         padding: theme.spacing(2),
+        margin: 5,
+        marginRight: 15
     },
     popover: {
         marginTop: 5
@@ -54,9 +56,6 @@ const LogoutPopover = (props) => {
 
     return (
         <div>
-            {/*<Button className={classes.userButton} aria-describedby={id} size={"small"} variant="contained" color="secondary" onClick={handleClick}>*/}
-            {/*    {props.username}*/}
-            {/*</Button>*/}
             <IconButton className={classes.userButton} size={"medium"} color="secondary" aria-label="user settings" onClick={handleClick}>
                 <AccountCircleIcon color={"secondary"} fontSize={"large"} />
             </IconButton>
@@ -77,7 +76,7 @@ const LogoutPopover = (props) => {
             >
                 <Typography className={classes.typography}>
                     <Typography variant="h6" gutterBottom>
-                        <div>USER: {props.username}</div>
+                        <div>{props.username}</div>
                     </Typography>
 
                     <Button className={classes.logoutButton}

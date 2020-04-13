@@ -1,22 +1,30 @@
 import {dataApi} from "../api/api";
 
 const BY_CLIENT_GET = 'BY_CLIENT_GET'
+const BY_CUSTOMER_GET = 'BY_CUSTOMER_GET'
 const REQUEST_IN_PROGRESS = 'REQUEST_IN_PROGRESS'
 
 let initialState = {
     data: [],
     newServerName: '',
     schedule: '',
-    isRequestInProgress: false
+    isRequestInProgress: false,
+    scheduleByCustomer: '',
+    newCustomerName: ''
 };
 
-const scheduleByClientReducer = (state = initialState, action) => {
+const scheduleGetReducer = (state = initialState, action) => {
     switch (action.type) {
         case BY_CLIENT_GET:
             return {
                 ...state,
-                newServerName: action.client,
+                schedule: action.schedule,
                 isRequestInProgress: action.isRequestInProgress
+            };
+        case BY_CUSTOMER_GET:
+            return {
+                ...state,
+                scheduleByCustomer: action.schedule,
             };
         case REQUEST_IN_PROGRESS:
             return {
@@ -28,7 +36,8 @@ const scheduleByClientReducer = (state = initialState, action) => {
     }
 }
 
-export const getByClient = (client, isRequestInProgress) => ({type: BY_CLIENT_GET, client, isRequestInProgress});
+export const getByClient = (schedule, isRequestInProgress) => ({type: BY_CLIENT_GET, schedule, isRequestInProgress});
+export const getByCustomer = (schedule) => ({type: BY_CUSTOMER_GET, schedule});
 export const requestInProgressAction = (isRequestInProgress) => ({type: REQUEST_IN_PROGRESS, isRequestInProgress})
 
 export const requestByClient = (client) => {
@@ -39,10 +48,18 @@ export const requestByClient = (client) => {
     }
 }
 
+export const requestByCustomer = (customer) => {
+    return (dispatch) => {
+        dataApi.getByCustomer(customer).then(data => {
+            dispatch(getByCustomer(data.customer));
+        })
+    }
+}
+
 export const requestInProgress = (is) => {
     return (dispatch) => {
         dispatch(requestInProgressAction(is));
     }
 }
 
-export default scheduleByClientReducer;
+export default scheduleGetReducer;
