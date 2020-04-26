@@ -44,6 +44,11 @@ export const useStyles = makeStyles((theme) => ({
     },
     popover: {
         marginTop: 5
+    },
+    invalidCreds: {
+        border: 'red 1px solid',
+        padding: '5px',
+        color: 'rosybrown',
     }
 }));
 
@@ -131,6 +136,7 @@ const LoginComponent = (props) => {
                                        className={classes.textField}/>
                             </ThemeProvider>
                         </div>
+                        {props.error && <div className={classes.invalidCreds}>{props.error}</div>}
                         <div>
                             <Button className={classes.loginButton}
                                     aria-describedby={id}
@@ -162,7 +168,7 @@ class Login extends React.Component {
     render() {
         if (this.props.userState.isAuth) {
             return (
-                <LogoutPopover username={this.props.userState.username} logout={this.props.logout}/>
+                <LogoutPopover username={this.props.userState.username} isStaff={this.props.userState.isStaff} logout={this.props.logout}/>
             )
         }
         return (

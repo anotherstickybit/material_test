@@ -6,16 +6,23 @@ import SimpleTabs from "./components/Navbar/Tabs";
 import Container from "@material-ui/core/Container";
 import BackToTop from "./components/ScrollToTop/ScrollToTop";
 
-function App() {
-    return (
-        <div>
-            <Container style={style} maxWidth={false}>
-                <Header/>
-                <SimpleTabs/>
-            </Container>
-            <BackToTop/>
-        </div>
-    );
+class App extends React.Component {
+
+    componentDidMount() {
+        document.title = 'DKSS Servers Backup Schedule Viewer';
+    }
+
+    render() {
+        return (
+            <div>
+                <Container style={style} maxWidth={false}>
+                    <Header/>
+                    <SimpleTabs/>
+                </Container>
+                <BackToTop/>
+            </div>
+        );
+    }
 }
 
 export default App;

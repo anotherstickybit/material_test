@@ -16,7 +16,8 @@ import {createMuiTheme} from "@material-ui/core";
 import {blue} from "@material-ui/core/colors";
 import {ThemeProvider} from "@material-ui/styles";
 import SimpleAlert from "../utils/SimpleAlert";
-import {requestByCustomer} from "../redux/scheduleGetReducer";
+import {requestByCustomer, requestInProgress} from "../redux/scheduleGetReducer";
+import CircularProgress from "@material-ui/core/CircularProgress";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -39,9 +40,9 @@ const useStyles = makeStyles((theme) => ({
         width: 165
     },
     createPdfButton: {
-        display: 'inline',
-        marginLeft: '10px',
-        marginTop: '35px',
+        display: 'inline-block',
+        marginLeft: '550px',
+        marginTop: '-84px',
         backgroundColor: '#039be5',
         '&:hover': {
             backgroundColor: '#0277bd'
@@ -54,7 +55,16 @@ const useStyles = makeStyles((theme) => ({
     outputStyle: {
         marginLeft: '40px',
         marginTop: '20px',
-    }
+        marginBottom: '20px',
+    },
+    progress: {
+        display: 'inline-block',
+        color: '#039be5',
+        margin: 0,
+        marginLeft: '40px',
+        marginTop: '35px',
+        width: 20
+    },
 }));
 
 const renderAutocomplete = ({
@@ -84,10 +94,41 @@ const ByCustomerComponent = (props) => {
         },
     });
     const classes = useStyles();
+
+    const createPDF = () => {
+        let sTable = document.getElementById('contents');
+        if(sTable.innerHTML === "") return
+        let nTable = sTable.cloneNode(true);
+        nTable.removeChild(nTable.firstChild);
+        let sTableInner = nTable.innerHTML;
+
+        let style = "<style>";
+        style = style + "table {width: 100%;font: 17px Calibri;}";
+        style = style + "table, th, td {border: solid 1px #DDD; border-collapse: collapse;";
+        style = style + "padding: 2px 3px;text-align: center;}";
+        style = style + "</style>";
+
+
+        let win = window.open('', '', 'height=700,width=700');
+
+        win.document.write('<html><head>');
+        win.document.write('<title>Schedules</title>');
+        win.document.write(style);
+        win.document.write('</head>');
+        win.document.write('<body>');
+        win.document.write(sTableInner);
+        win.document.write('</body></html>');
+
+        win.document.close();
+
+        win.print();
+    }
+
     return (
         <div>
             { !props.isAuth && <SimpleAlert /> }
             <form onSubmit={props.handleSubmit}>
+
                 <FormControl className={classes.formControl}>
                     <ThemeProvider theme={theme}>
                         <Field name={'autocomplete'} required={true} className={classes.autocomplete}
@@ -95,12 +136,19 @@ const ByCustomerComponent = (props) => {
                                disabled={!props.isAuth}/>
                     </ThemeProvider>
                 </FormControl>
-                <Button className={classes.getButton} disabled={!props.isAuth} variant="contained" type={'submit'} color="primary">Get
-                    Schedule</Button>
-                <Button className={classes.createPdfButton} disabled={true} variant="contained" color="primary">Create
+
+                { props.isRequestInProgress ? <CircularProgress mode="indeterminate" classes={{root: classes.progress}}/>
+                    :
+                    <Button className={classes.getButton} disabled={!props.isAuth} variant="contained" type={'submit'}
+                            color="primary">Get
+                        Schedule</Button>
+                }
+                <div>
+                <Button className={classes.createPdfButton} onClick={createPDF} variant="contained" color="primary">Create
                     PDF</Button>
+                </div>
             </form>
-            { props.isAuth && <div className={classes.outputStyle} dangerouslySetInnerHTML={{__html: props.schedule}}/> }
+            { props.isAuth && <div id={'contents'} className={classes.outputStyle} dangerouslySetInnerHTML={{__html: props.schedule}}/> }
         </div>
     );
 }
@@ -109,6 +157,7 @@ const ByCustomerReduxForm = reduxForm({form: 'byCustomer', validate})(ByCustomer
 class ByCustomer extends React.Component {
 
     onSubmit(formData) {
+        this.props.requestInProgress(true);
         this.props.requestByCustomer(formData.autocomplete.val);
     }
 
@@ -116,7 +165,8 @@ class ByCustomer extends React.Component {
         return (
             <ByCustomerReduxForm onSubmit={this.onSubmit.bind(this)} isAuth={this.props.authorization.isAuth}
                                  allowedCustomers={this.props.authorization.allowedCustomers}
-                                 schedule={this.props.byCustomer.scheduleByCustomer}/>
+                                 schedule={this.props.byCustomer.scheduleByCustomer}
+                                 isRequestInProgress={this.props.byCustomer.isRequestInProgress}/>
         );
 
     }
@@ -127,4 +177,4 @@ const mapStateToProps = (state) => ({
     byCustomer: state.byClient,
 })
 
-export default connect(mapStateToProps, {requestByCustomer})(ByCustomer);
+export default connect(mapStateToProps, {requestByCustomer, requestInProgress})(ByCustomer);

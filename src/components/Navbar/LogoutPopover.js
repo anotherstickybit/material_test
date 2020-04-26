@@ -6,6 +6,7 @@ import Button from '@material-ui/core/Button';
 import IconButton from "@material-ui/core/IconButton";
 import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import { red } from '@material-ui/core/colors';
+import {Redirect} from "react-router-dom";
 
 const useStyles = makeStyles((theme) => ({
     typography: {
@@ -51,6 +52,10 @@ const LogoutPopover = (props) => {
         localStorage.removeItem('access-jwt');
     }
 
+    const redirectToAdmin = () => {
+        return <Redirect to={'http://127.0.0.1:8001/admin'} />
+    }
+
     const open = Boolean(anchorEl);
     const id = open ? 'simple-popover' : undefined;
 
@@ -78,7 +83,11 @@ const LogoutPopover = (props) => {
                     <Typography variant="h6" gutterBottom>
                         <div>{props.username}</div>
                     </Typography>
-
+                    <div>
+                    { props.isStaff === true && <Button className={classes.logoutButton}
+                                                            aria-describedby={id} size={"small"}
+                                                            variant="contained" color="secondary" onClick={()=> window.open("http://172.26.100.55:8001/admin/", "_blank")}>Admin Page</Button> }
+                    </div>
                     <Button className={classes.logoutButton}
                             aria-describedby={id} size={"small"}
                             variant="contained" color="secondary" onClick={logoutUser}>Logout</Button>

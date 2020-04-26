@@ -1,4 +1,5 @@
 import {dataApi} from "../api/api";
+import {stopSubmit} from "redux-form";
 
 const SET_USER_DATA = 'SET_USER_DATA';
 const SET_USER_NAME_AND_CUSTOMERS = 'SET_USER_NAME_AND_CUSTOMERS';
@@ -13,6 +14,7 @@ let initialState = {
     accessToken: '',
     refreshToken: '',
     isAuth: false,
+    isStaff: false,
 
     allowedCustomers: ''
 };
@@ -44,7 +46,8 @@ const authReducer = (state = initialState, action) => {
                 ...state,
                 username: action.username,
                 isAuth: true,
-                allowedCustomers: action.allowedCustomers
+                allowedCustomers: action.allowedCustomers,
+                isStaff: action.isStaff
             };
         case LOGOUT:
             return {
@@ -58,8 +61,8 @@ const authReducer = (state = initialState, action) => {
 export const authenticate = (username) =>
     ({type: SET_USER_DATA, username});
 
-export const setUserNameAndCustomers = (username, allowedCustomers) =>
-    ({type: SET_USER_NAME_AND_CUSTOMERS, username, allowedCustomers});
+export const setUserNameAndCustomers = (username, allowedCustomers, isStaff) =>
+    ({type: SET_USER_NAME_AND_CUSTOMERS, username, allowedCustomers, isStaff});
 
 export const loggedOut = () =>
     ({type: LOGOUT});
@@ -68,9 +71,14 @@ export const loggedOut = () =>
 export const authenticateUser = (userName, password) => {
     return (dispatch) => {
         dataApi.authorize(userName, password).then(data => {
-            dataApi.me(data.access).then(data => {
-                dispatch(setUserNameAndCustomers(data.Username, data.Customers));
-            })
+            if (data.detail) {
+                let message = 'Invalid user credentials';
+                dispatch(stopSubmit('login', {_error: message}));
+            } else {
+                dataApi.me(data.access).then(data => {
+                    dispatch(setUserNameAndCustomers(data.Username, data.Customers, data.IsStaff));
+                })
+            }
         });
     }
 }
@@ -78,14 +86,14 @@ export const authenticateUser = (userName, password) => {
 export const onRefreshCheckIfAuth = (accessToken) => {
     return (dispatch) => {
         dataApi.me(accessToken).then(data => {
-            dispatch(setUserNameAndCustomers(data.Username, data.Customers));
+            dispatch(setUserNameAndCustomers(data.Username, data.Customers, data.IsStaff));
         })
     }
 }
 
 export const logout = () => {
     return (dispatch) => {
-            dispatch(loggedOut());
+        dispatch(loggedOut());
     }
 }
 

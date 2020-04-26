@@ -11,7 +11,7 @@ import Typography from "@material-ui/core/Typography";
 import {createMuiTheme} from "@material-ui/core";
 import {blue} from '@material-ui/core/colors';
 import {ThemeProvider} from "@material-ui/styles";
-import {requestByClient, requestInProgress} from "../redux/scheduleGetReducer";
+import {clearBothSchedules, requestByClient, requestInProgress} from "../redux/scheduleGetReducer";
 
 
 const useStyles = makeStyles((theme) => ({
@@ -53,6 +53,7 @@ const useStyles = makeStyles((theme) => ({
     outputStyle: {
         marginLeft: '40px',
         marginTop: '20px',
+        marginBottom: '20px',
     }
 }));
 
@@ -91,7 +92,7 @@ const ByClientComponent = (props) => {
             <div>
                 <form onSubmit={props.handleSubmit}>
                     <Typography variant="h6" gutterBottom className={classes.typography}>
-                        Explanation
+                        Please don't use FQDN server names. Use only short names
                     </Typography>
                     <div>
                         <ThemeProvider theme={theme}>
@@ -117,9 +118,9 @@ const ByClientReduxForm = reduxForm({form: 'byClient', validate})(ByClientCompon
 class ByClient extends React.Component {
 
     onSubmit(formData) {
+        // this.props.clearBothSchedules();
         this.props.requestInProgress(true);
         this.props.requestByClient(formData.client);
-
     }
 
     render() {
@@ -135,4 +136,4 @@ const mapStateToProps = (state) => ({
     byClientPage: state.byClient,
 })
 
-export default connect(mapStateToProps, {requestByClient, requestInProgress})(ByClient);
+export default connect(mapStateToProps, {requestByClient, requestInProgress, clearBothSchedules})(ByClient);

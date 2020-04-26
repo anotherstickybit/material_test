@@ -9,7 +9,7 @@ function Alert(props) {
 const useStyles = makeStyles((theme) => ({
     alert: {
         display: 'inline-block',
-        width: '670px',
+        width: '690px',
         marginLeft: '25px',
         marginTop: '20px',
         '& > * + *': {
