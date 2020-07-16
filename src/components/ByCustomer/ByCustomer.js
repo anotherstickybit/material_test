@@ -144,7 +144,7 @@ const ByCustomerComponent = (props) => {
                         Schedule</Button>
                 }
                 <div>
-                <Button className={classes.createPdfButton} onClick={createPDF} variant="contained" color="primary">Create
+                <Button className={classes.createPdfButton} disabled={!props.isAuth} onClick={createPDF} variant="contained" color="primary">Create
                     PDF</Button>
                 </div>
             </form>
